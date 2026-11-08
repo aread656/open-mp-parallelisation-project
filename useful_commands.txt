@@ -1,0 +1,26 @@
+for file in results/method-a_*.out; do echo "$(grep 'wall:' "$file" | tail -n 1)"; done > results/times.txt
+for file in results/method-a-sequential_*.out; do echo "$(grep 'wall:' "$file" | tail -n 1)"; done > results/times.txt
+
+
+for n in 1 2 4 8 16 32 64 128; do sbatch --cpus-per-task="$n" method-a.bash; done
+for n in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 21 32; do sbatch --cpus-per-task="$n" method-a.bash; done
+for n in 1 2 3 4 5 6 7 8 10 12 14 16 18 20 22 24 28 32 36 40 48 52 56 60 64; do sbatch --cpus-per-task="$n" method-a.bash; done
+for n in 1 2 3 4 5 6 7 8 10 12 14 16 18 20 22 24 28 32 36 40 44 48; do sbatch --cpus-per-task="$n" method-a.bash; done
+for n in 1 2 3 4 5 6 7 8 10 12 14 16 18 20 22 24 28 32 36 40 44 48 52 56 60 64; do sbatch --cpus-per-task="$n" method-a.bash; done
+for n in 68 72 76 80 84 88 92 96; do sbatch --cpus-per-task="$n" method-a.bash; done
+for n in 1 2 3 4 5 6 7 8 10 12 14 16 18 20 22 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84 88 92 96; do sbatch --cpus-per-task="$n" method-a.bash; done
+
+for n in 1 2 3 4 5 6 7 8 9 10; do sbatch method-a.bash; done
+
+./method-a-sequential source.txt patterns.txt | grep "^\*\*" | sort > output-a.txt
+./method-a source.txt patterns.txt | grep "^\*\*" | sort > output-a-p.txt
+
+python3 method-a-analysis.py method-a-results.csv 
+
+gcc -fopenmp method-a.c -o method-a
+
+gcc -fopenmp method-b.c -o method-b
+for file in results/method-b_*.out; do echo "$(grep 'wall:' "$file" | tail -n 1)"; done > results/times.txt
+for n in 1 2 3 4 5 6 7 8 10 12 14 16 18 20 22 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84 88 92 96; do sbatch --cpus-per-task="$n" method-b.bash; done
+
+for run in {1..10}; do for n in 1 2 3 4 5 6 7 8 10 12 14 16 18 20 22 24 28 32 36 40 44 48 52 56 60 64 68 72 76 80 84 88 92 96; do sbatch --cpus-per-task="$n" method-b.bash; done; done
